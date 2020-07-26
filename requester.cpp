@@ -26,8 +26,6 @@ Requester::Requester(QObject *parent) : QObject(parent)
             funcFailed(reply->errorString());
         }
 
-        reply->close();
-        reply->deleteLater();
     }
     );
 }
@@ -63,8 +61,12 @@ void Requester::sendRequest(const Requester::handleFuncRequest &funcSuccess,
     this->funcFailed = funcFailed;
 
     request.setUrl(url);
-    manager->get(request);
+    reply = QSharedPointer<QNetworkReply>(manager->get(request),[](QObject* object){
+        QNetworkReply* ptr = qobject_cast<QNetworkReply*>(object);
+        ptr->close();
+        ptr->deleteLater();
 
+    });
 }
 
 void Requester::lookUpHost(const handleFuncDNSLookup &funcDNSLookup,

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QNetworkRequest>
 #include <functional>
+#include <QSharedPointer>
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -53,6 +54,7 @@ private:
 
     QNetworkRequest request;
     QNetworkAccessManager *manager;
+    QSharedPointer<QNetworkReply> reply;
     QDnsLookup* dnsLookup;
     handleFuncRequest funcSuccess;
     handleFuncRequest funcFailed;

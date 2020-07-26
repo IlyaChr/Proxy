@@ -4,6 +4,8 @@
 #include <QDesktopWidget>
 #include <QDebug>
 #include <QRegExpValidator>
+#include <QTimer>
+
 
 const QString MainWindow::IP = "IP";
 const QString MainWindow::PTR = "PTR";
@@ -16,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
-
     QSize screenSize = QDesktopWidget().availableGeometry(this).size();
     this->setFixedSize(QSize(static_cast<int>(screenSize.width()*0.2),static_cast<int>(screenSize.height()*0.5)));
 
@@ -25,6 +26,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->proxy_port->setValidator(getPortValidator(ui->proxy_port));
 
     req = new Requester(this);
+
+    checkTimer = new QTimer(this);
+    checkTimer->setSingleShot(true);
+    checkTimer->setInterval(10000);
+    QObject::connect(checkTimer,&QTimer::timeout,this,[=](){
+        ui->checkButton->setEnabled(true);
+    });
+
 }
 
 MainWindow::~MainWindow()
@@ -34,8 +43,13 @@ MainWindow::~MainWindow()
 
 
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_checkButton_clicked()
 {
+    if (ui->proxy_hostname->text().isEmpty() || ui->proxy_port->text().isEmpty()){
+        return;
+    }
+
+    ui->checkButton->setDisabled(true);
 
     ui->proxy_hostname_result->clear();
     ui->proxy_ptr_result->clear();
@@ -62,10 +76,13 @@ void MainWindow::on_pushButton_clicked()
     },
     Requester::QUERY_URL);
 
+    checkTimer->start();
+
 }
 
 void MainWindow::succProcess(const QString &data)
 {
+    checkTimer->stop();
     QVector<QString> vector_res;
     vector_res.reserve(4);
 
@@ -86,6 +103,7 @@ void MainWindow::succProcess(const QString &data)
         ui->proxy_city_result->setText(result[MainWindow::CITY]);
     }
 
+    ui->checkButton->setEnabled(true);
 }
 
 QRegExpValidator *MainWindow::getIPValidator(QWidget *parent)
@@ -114,6 +132,9 @@ QRegExpValidator *MainWindow::getPortValidator(QWidget *parent)
 
 void MainWindow::on_check_spam_clicked()
 {
+    if (ui->spam_ip->text().isEmpty()){
+        return;
+    }
 
     ui->check_spam->setDisabled(true);
 
@@ -130,3 +151,4 @@ void MainWindow::on_check_spam_clicked()
     },
     ui->spam_ip->text());
 }
+

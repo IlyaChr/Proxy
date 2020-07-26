@@ -24,9 +24,9 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
-
     void on_check_spam_clicked();
+
+    void on_checkButton_clicked();
 
 private:
 
@@ -37,6 +37,7 @@ private:
     Ui::MainWindow *ui;
     QHash<QString, QString> result;
     Requester* req;
+    QTimer* checkTimer;
 
 
 

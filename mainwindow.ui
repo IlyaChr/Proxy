@@ -28,7 +28,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item alignment="Qt::AlignHCenter">
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="checkButton">
          <property name="text">
           <string>Check</string>
          </property>
@@ -353,7 +353,7 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <tabstops>
-  <tabstop>pushButton</tabstop>
+  <tabstop>checkButton</tabstop>
   <tabstop>proxy_hostname</tabstop>
   <tabstop>proxy_port</tabstop>
   <tabstop>proxy_login</tabstop>
